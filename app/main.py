@@ -1,5 +1,10 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Depends
 from fastapi.middleware.cors import CORSMiddleware
+from sqlalchemy.orm import Session
+from sqlalchemy import text
+
+# Import de la configuration DB
+from app.database import get_db
 
 # TODO: Importer les routes quand elles seront créées
 # from app.routes import users, projects, tasks
@@ -32,10 +37,10 @@ app = FastAPI(
     },
 )
 
-# Configuration CORS (pour permettre les requêtes depuis le frontend si besoin)
+# Configuration CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # À restreindre en production
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -64,6 +69,28 @@ def health_check():
     Utilisé par Docker et les orchestrateurs.
     """
     return {"status": "healthy"}
+
+
+# Route pour tester la connexion DB (mise à jour avec text())
+@app.get("/db-test", tags=["Database"])
+def test_database(db: Session = Depends(get_db)):
+    """
+    Route de test pour vérifier que la connexion à la base de données fonctionne.
+    """
+    try:
+        # Exécuter une requête simple avec text() pour SQLAlchemy 2.0+
+        result = db.execute(text("SELECT 1 as test"))
+        row = result.fetchone()
+        return {
+            "status": "success",
+            "message": "Connexion à la base de données réussie!",
+            "test_query_result": row[0]
+        }
+    except Exception as e:
+        return {
+            "status": "error",
+            "message": f"Erreur de connexion: {str(e)}"
+        }
 
 
 # TODO: Inclure les routers quand ils seront créés (Issues #5, #6, #10, #11)
