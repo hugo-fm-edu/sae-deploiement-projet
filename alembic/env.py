@@ -15,8 +15,7 @@ sys.path.insert(0, os.path.realpath(os.path.join(os.path.dirname(__file__), '..'
 # Importer la Base et les modèles
 from app.database.db import Base
 # Importer tous les modèles pour que Alembic les détecte
-# (Décommenter ces lignes quand les modèles seront créés dans Issue #3)
-# from app.models import user, user_profile, project, task
+from app.models import user, user_profile, project, task
 
 # this is the Alembic Config object
 config = context.config
