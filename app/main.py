@@ -93,6 +93,146 @@ def test_database(db: Session = Depends(get_db)):
         }
 
 
+# Route de démo pour les schemas pédantic
+
+# Import des schémas
+from app.schemas.project import ProjectCreate, ProjectResponse, ProjectWithTasks
+from app.schemas.task import TaskCreate, TaskResponse, TaskStatus
+
+
+@app.post("/demo/projects", response_model=ProjectResponse, tags=["Demo - Schemas"])
+def create_project_demo(project: ProjectCreate):
+    """
+    **Démonstration**: Créer un projet avec le schéma ProjectCreate.
+    
+    Teste la validation Pydantic sur: `name` et  `description` 
+    
+    ### Exemple de réponse:
+    ```json
+    {
+        "id": 1,
+        "name": "Mon Projet",
+        "description": "Description de mon projet"
+    }
+    ```
+    """
+    # Simulation d'une création (sans vraie DB)
+    return ProjectResponse(
+        id=1,
+        name=project.name,
+        description=project.description
+    )
+
+
+@app.get("/demo/projects/{project_id}", response_model=ProjectWithTasks, tags=["Demo - Schemas"])
+def get_project_with_tasks_demo(project_id: int):
+    """
+    **Démonstration**: Récupérer un projet avec ses tâches.
+    
+    Teste le schéma ProjectWithTasks qui inclut:
+    - Tous les champs de ProjectResponse
+    - Une liste de TaskResponse (les tâches du projet)
+    
+    ### Exemple de réponse:
+    ```json
+    {
+        "id": 1,
+        "name": "Mon Projet",
+        "description": "Description",
+        "tasks": [
+            {
+                "id": 1,
+                "title": "Tâche 1",
+                "status": "TODO",
+                "due_date": "2026-02-15",
+                "project_id": 1
+            }
+        ]
+    }
+    ```
+    """
+    # Simulation d'une récupération avec tâches
+    return ProjectWithTasks(
+        id=project_id,
+        name="Mon Projet",
+        description="Description de mon projet",
+        tasks=[
+            TaskResponse(
+                id=1,
+                title="Implémenter l'authentification",
+                status=TaskStatus.IN_PROGRESS,
+                due_date=None,
+                project_id=project_id
+            ),
+            TaskResponse(
+                id=2,
+                title="Créer les routes API",
+                status=TaskStatus.TODO,
+                due_date=None,
+                project_id=project_id
+            )
+        ]
+    )
+
+
+@app.post("/demo/tasks", response_model=TaskResponse, tags=["Demo - Schemas"])
+def create_task_demo(task: TaskCreate):
+    """
+    **Démonstration**: Créer une tâche avec le schéma TaskCreate.
+    
+    Teste la validation Pydantic sur:
+    - `title` (requis, 1-200 caractères)
+    - `status` (enum: TODO, IN_PROGRESS, DONE) - défaut TODO
+    - `due_date` (optionnel, format date YYYY-MM-DD)
+    - `project_id` (requis, > 0)
+    
+    ### Énumérations supportées pour status:
+    - `TODO` - Tâche à faire
+    - `IN_PROGRESS` - Tâche en cours
+    - `DONE` - Tâche terminée
+    
+    ### Exemple de réponse:
+    ```json
+    {
+        "id": 1,
+        "title": "Créer les routes API",
+        "status": "TODO",
+        "due_date": "2026-02-20",
+        "project_id": 1
+    }
+    ```
+    """
+    # Simulation d'une création
+    return TaskResponse(
+        id=1,
+        title=task.title,
+        status=task.status,
+        due_date=task.due_date,
+        project_id=task.project_id
+    )
+
+
+@app.get("/demo/task-status-enum", tags=["Demo - Schemas"])
+def get_task_status_enum():
+    """
+    **Démonstration**: Récupérer tous les statuts possibles pour une tâche (Enum).
+    
+    L'énumération TaskStatus est disponible dans Swagger et validée automatiquement.
+    
+    ### Réponse:
+    ```json
+    {
+        "available_statuses": ["TODO", "IN_PROGRESS", "DONE"],
+        "description": "Ces valeurs sont les seules acceptées pour le champ 'status' des tâches"
+    }
+    ```
+    """
+    return {
+        "available_statuses": [status.value for status in TaskStatus],
+        "description": "Ces valeurs sont les seules acceptées pour le champ 'status' des tâches"
+    }
+
+
 # TODO: Inclure les routers quand ils seront créés (Issues #5, #6, #10, #11)
 # app.include_router(users.router, prefix="/users", tags=["Users"])
 # app.include_router(projects.router, prefix="/projects", tags=["Projects"])
