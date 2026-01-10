@@ -8,6 +8,7 @@ from app.database import get_db
 
 # Import des routes
 from app.routes.projects import router as projects_router
+from app.routes.task import router as tasks_router
 
 #temporaire pour generer automatiquement les tables à partir des modeles ORM
 from app.database import Base, engine
@@ -53,6 +54,7 @@ app.add_middleware(
 
 # connecter les routes à l'app
 app.include_router(projects_router)
+app.include_router(tasks_router)
 
 
 # Route de test pour vérifier que l'API fonctionne
