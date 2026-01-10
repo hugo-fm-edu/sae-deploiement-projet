@@ -6,8 +6,13 @@ from sqlalchemy import text
 # Import de la configuration DB
 from app.database import get_db
 
-# TODO: Importer les routes quand elles seront créées
-# from app.routes import users, projects, tasks
+# Import des routes
+from app.routes.projects import router as projects_router
+
+#temporaire pour generer automatiquement les tables à partir des modeles ORM
+from app.database import Base, engine
+Base.metadata.create_all(bind=engine)
+
 
 app = FastAPI(
     title="SAE Project API",
@@ -45,6 +50,9 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# connecter les routes à l'app
+app.include_router(projects_router)
 
 
 # Route de test pour vérifier que l'API fonctionne
