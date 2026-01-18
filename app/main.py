@@ -7,6 +7,7 @@ from sqlalchemy import text
 from app.database import get_db
 
 # Import des routes
+from app.routes.users import router as users_router
 from app.routes.projects import router as projects_router
 from app.routes.task import router as tasks_router
 
@@ -58,6 +59,7 @@ app.add_middleware(
 )
 
 # connecter les routes à l'app
+app.include_router(users_router)
 app.include_router(projects_router)
 app.include_router(tasks_router)
 
@@ -246,12 +248,6 @@ def get_task_status_enum():
         "available_statuses": [status.value for status in TaskStatus],
         "description": "Ces valeurs sont les seules acceptées pour le champ 'status' des tâches"
     }
-
-
-# TODO: Inclure les routers quand ils seront créés (Issues #5, #6, #10, #11)
-# app.include_router(users.router, prefix="/users", tags=["Users"])
-# app.include_router(projects.router, prefix="/projects", tags=["Projects"])
-# app.include_router(tasks.router, prefix="/tasks", tags=["Tasks"])
 
 
 if __name__ == "__main__":
