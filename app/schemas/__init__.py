@@ -1,35 +1,14 @@
-"""
-Schémas Pydantic pour validation et sérialisation des données.
-"""
+from app.schemas.user import UserBase, UserCreate, UserUpdate, UserResponse
+from app.schemas.user_profile import ProfileBase, ProfileCreate, ProfileUpdate, ProfileResponse
 
-from .task import (
-    TaskStatus,
-    TaskBase,
-    TaskCreate,
-    TaskUpdate,
-    TaskResponse
-)
-
-from .project import (
-    ProjectBase,
-    ProjectCreate,
-    ProjectUpdate,
-    ProjectResponse,
-    ProjectWithTasks
-)
-
+# Exporter tous les schémas pour faciliter les imports
 __all__ = [
-    # Task schemas
-    "TaskStatus",
-    "TaskBase",
-    "TaskCreate",
-    "TaskUpdate",
-    "TaskResponse",
-    
-    # Project schemas
-    "ProjectBase",
-    "ProjectCreate",
-    "ProjectUpdate",
-    "ProjectResponse",
-    "ProjectWithTasks",
+    "UserBase",
+    "UserCreate", 
+    "UserUpdate",
+    "UserResponse",
+    "ProfileBase",
+    "ProfileCreate",
+    "ProfileUpdate",
+    "ProfileResponse"
 ]
