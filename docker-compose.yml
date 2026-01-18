@@ -1,0 +1,44 @@
+version: "3.9" 
+
+services:
+  # service PostgreSQL
+  db:
+    image: postgres:15-alpine
+    container_name: postgres_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-sae_samy_hugo}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-sae_samy_hugo}
+      POSTGRES_DB: ${POSTGRES_DB:-sae_ddaw}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432" 
+    networks:
+      - backend
+    healthcheck: #s'assurer que la db est prete avant de demarrer l'api
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-sae_samy_hugo} -d ${POSTGRES_DB:-sae_ddaw}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      
+  # service API FastAPI
+  api:
+    build: .
+    container_name: fastapi_app
+    restart: unless-stopped
+    depends_on:
+      - db
+    environment:
+      DATABASE_URL: postgresql://sae_samy_hugo:sae_samy_hugo@db:5432/sae_ddaw
+    ports:
+      - "8000:8000"
+    networks:
+      - backend
+  
+volumes:
+  postgres_data:
+
+networks:
+  backend:
+    driver: bridge
