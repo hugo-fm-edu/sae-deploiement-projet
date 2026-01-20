@@ -91,3 +91,41 @@ Le projet implémente **les trois types de relations exigées** :
 - `DELETE /tasks/{id}`
 
 ---
+
+## Base de données – Chargement des données de test
+
+Un script SQL est disponible pour insérer des données de test dans la base de données.
+
+### Données de test incluses
+
+Le fichier `database/init_data.sql` contient :
+- **5 utilisateurs** avec profils complets
+- **3 projets** collaboratifs
+- **10 tâches** réparties sur les projets
+- **Associations** utilisateur-projet (Many-to-Many)
+
+### Utilisation
+
+**Méthode 1 : Avec Docker Compose (recommandé)**
+
+```bash
+# Copier le script dans le container
+docker cp database/init_data.sql sae-db:/tmp/init_data.sql
+
+# Exécuter le script
+docker-compose exec db psql -U sae_samy_hugo -d sae_ddaw -f /tmp/init_data.sql
+```
+
+**Méthode 2 : en Local**
+
+```bash
+psql -U sae_samy_hugo -d sae_ddaw -f database/init_data.sql
+```
+
+**Méthode 3 : Via un autre outil**
+
+1. Ouvrir le fichier `database/init_data.sql`
+2. Copier le contenu
+3. Exécuter dans l'outil de votre choix
+
+---
