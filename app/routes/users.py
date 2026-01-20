@@ -5,7 +5,9 @@ from typing import List
 
 from app.database import get_db
 from app.models.user import User
+from app.models.user_profile import UserProfile
 from app.schemas.user import UserCreate, UserUpdate, UserResponse
+from app.schemas.user_profile import ProfileCreate, ProfileUpdate, ProfileResponse
 
 # Configurer le routeur
 router = APIRouter(prefix="/users", tags=["Users"])
@@ -313,4 +315,291 @@ def delete_user(
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Erreur serveur lors de la suppression de l'utilisateur: {str(e)}"
+        )
+
+# GET /users/{user_id}/profile - Récupérer le profil d'un utilisateur
+@router.get(
+    "/{user_id}/profile",
+    response_model=ProfileResponse,
+    summary="Récupérer le profil d'un utilisateur",
+    description="Récupère le profil associé à un utilisateur"
+)
+def get_user_profile(
+    user_id: int,
+    db: Session = Depends(get_db)
+):
+    """
+    Récupère le profil d'un utilisateur.
+    
+    - **user_id**: ID de l'utilisateur dont on veut récupérer le profil
+    
+    ### Erreurs possibles:
+    - **404**: Utilisateur non trouvé ou profil non trouvé
+    - **500**: Erreur serveur
+    
+    ### Exemple de réponse:
+    ```json
+    {
+        "id": 1,
+        "user_id": 1,
+        "bio": "Développeur passionné par Python et FastAPI",
+        "phone_number": "+33 6 12 34 56 78"
+    }
+    ```
+    """
+    try:
+        # Vérifier que l'utilisateur existe
+        user = db.query(User).filter(User.id == user_id).first()
+        if not user:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"Utilisateur avec l'ID {user_id} non trouvé"
+            )
+        
+        # Récupérer le profil
+        profile = db.query(UserProfile).filter(UserProfile.user_id == user_id).first()
+        if not profile:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"Aucun profil trouvé pour l'utilisateur {user_id}"
+            )
+        
+        return profile
+    
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Erreur serveur lors de la récupération du profil: {str(e)}"
+        )
+
+
+# POST /users/{user_id}/profile - Créer un profil pour un utilisateur
+@router.post(
+    "/{user_id}/profile",
+    response_model=ProfileResponse,
+    status_code=status.HTTP_201_CREATED,
+    summary="Créer un profil pour un utilisateur",
+    description="Crée un nouveau profil pour un utilisateur (One-to-One)"
+)
+def create_user_profile(
+    user_id: int,
+    profile: ProfileCreate,
+    db: Session = Depends(get_db)
+):
+    """
+    Crée un profil pour un utilisateur.
+    
+    - **user_id**: ID de l'utilisateur pour lequel créer le profil
+    - **bio**: Biographie de l'utilisateur (optionnel, max 500 caractères)
+    - **phone_number**: Numéro de téléphone (optionnel, max 20 caractères)
+    
+    ⚠️ **Contrainte One-to-One**: Un utilisateur ne peut avoir qu'un seul profil.
+    
+    ### Erreurs possibles:
+    - **404**: Utilisateur non trouvé
+    - **400**: L'utilisateur a déjà un profil
+    - **500**: Erreur serveur
+    
+    ### Exemple de requête:
+    ```json
+    {
+        "user_id": 1,
+        "bio": "Développeur passionné par Python et FastAPI",
+        "phone_number": "+33 6 12 34 56 78"
+    }
+    ```
+    
+    ### Exemple de réponse:
+    ```json
+    {
+        "id": 1,
+        "user_id": 1,
+        "bio": "Développeur passionné par Python et FastAPI",
+        "phone_number": "+33 6 12 34 56 78"
+    }
+    ```
+    """
+    try:
+        # Vérifier que l'utilisateur existe
+        user = db.query(User).filter(User.id == user_id).first()
+        if not user:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"Utilisateur avec l'ID {user_id} non trouvé"
+            )
+        
+        # Vérifier que l'utilisateur n'a pas déjà un profil (contrainte One-to-One)
+        existing_profile = db.query(UserProfile).filter(UserProfile.user_id == user_id).first()
+        if existing_profile:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail=f"L'utilisateur {user_id} a déjà un profil. Utilisez PUT pour le modifier."
+            )
+        
+        # Vérifier que le user_id dans le body correspond au user_id dans l'URL
+        if profile.user_id != user_id:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail=f"Le user_id dans le corps ({profile.user_id}) ne correspond pas à l'URL ({user_id})"
+            )
+        
+        # Créer le profil
+        db_profile = UserProfile(
+            user_id=user_id,
+            bio=profile.bio,
+            phone_number=profile.phone_number
+        )
+        
+        db.add(db_profile)
+        db.commit()
+        db.refresh(db_profile)
+        
+        return db_profile
+    
+    except HTTPException:
+        raise
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Erreur serveur lors de la création du profil: {str(e)}"
+        )
+
+
+# PUT /users/{user_id}/profile - Mettre à jour le profil d'un utilisateur
+@router.put(
+    "/{user_id}/profile",
+    response_model=ProfileResponse,
+    summary="Mettre à jour le profil d'un utilisateur",
+    description="Met à jour les informations du profil d'un utilisateur existant"
+)
+def update_user_profile(
+    user_id: int,
+    profile_update: ProfileUpdate,
+    db: Session = Depends(get_db)
+):
+    """
+    Met à jour le profil d'un utilisateur.
+    
+    - **user_id**: ID de l'utilisateur dont on veut mettre à jour le profil
+    - **bio**: Nouvelle biographie (optionnel)
+    - **phone_number**: Nouveau numéro de téléphone (optionnel)
+    
+    ### Erreurs possibles:
+    - **404**: Utilisateur non trouvé ou profil non trouvé
+    - **500**: Erreur serveur
+    
+    ### Exemple de requête:
+    ```json
+    {
+        "bio": "Développeur senior spécialisé en FastAPI et PostgreSQL",
+        "phone_number": "+33 6 98 76 54 32"
+    }
+    ```
+    
+    ### Exemple de réponse:
+    ```json
+    {
+        "id": 1,
+        "user_id": 1,
+        "bio": "Développeur senior spécialisé en FastAPI et PostgreSQL",
+        "phone_number": "+33 6 98 76 54 32"
+    }
+    ```
+    """
+    try:
+        # Vérifier que l'utilisateur existe
+        user = db.query(User).filter(User.id == user_id).first()
+        if not user:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"Utilisateur avec l'ID {user_id} non trouvé"
+            )
+        
+        # Récupérer le profil existant
+        db_profile = db.query(UserProfile).filter(UserProfile.user_id == user_id).first()
+        if not db_profile:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"Aucun profil trouvé pour l'utilisateur {user_id}. Utilisez POST pour en créer un."
+            )
+        
+        # Mettre à jour les champs fournis
+        if profile_update.bio is not None:
+            db_profile.bio = profile_update.bio
+        if profile_update.phone_number is not None:
+            db_profile.phone_number = profile_update.phone_number
+        
+        db.commit()
+        db.refresh(db_profile)
+        
+        return db_profile
+    
+    except HTTPException:
+        raise
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Erreur serveur lors de la mise à jour du profil: {str(e)}"
+        )
+
+
+# DELETE /users/{user_id}/profile - Supprimer le profil d'un utilisateur
+@router.delete(
+    "/{user_id}/profile",
+    status_code=status.HTTP_204_NO_CONTENT,
+    summary="Supprimer le profil d'un utilisateur",
+    description="Supprime le profil associé à un utilisateur"
+)
+def delete_user_profile(
+    user_id: int,
+    db: Session = Depends(get_db)
+):
+    """
+    Supprime le profil d'un utilisateur.
+    
+    - **user_id**: ID de l'utilisateur dont on veut supprimer le profil
+    
+    ℹ️ **Note**: L'utilisateur n'est pas supprimé, seulement son profil.
+    
+    ### Erreurs possibles:
+    - **404**: Utilisateur non trouvé ou profil non trouvé
+    - **500**: Erreur serveur
+    
+    ### Réponse:
+    - **204**: Suppression réussie (pas de contenu)
+    """
+    try:
+        # Vérifier que l'utilisateur existe
+        user = db.query(User).filter(User.id == user_id).first()
+        if not user:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"Utilisateur avec l'ID {user_id} non trouvé"
+            )
+        
+        # Récupérer le profil
+        db_profile = db.query(UserProfile).filter(UserProfile.user_id == user_id).first()
+        if not db_profile:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"Aucun profil trouvé pour l'utilisateur {user_id}"
+            )
+        
+        # Supprimer le profil
+        db.delete(db_profile)
+        db.commit()
+        
+        return None
+    
+    except HTTPException:
+        raise
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Erreur serveur lors de la suppression du profil: {str(e)}"
         )
