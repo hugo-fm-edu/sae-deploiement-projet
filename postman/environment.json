@@ -1,0 +1,76 @@
+{
+	"id": "31f665e8-e5a3-4dfa-880e-19d7ff370701",
+	"name": "Local Environment",
+	"values": [
+		{
+			"key": "base_url",
+			"value": "",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "user_",
+			"value": "",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "user_id_1",
+			"value": "",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "user_id_2",
+			"value": "",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "task_id",
+			"value": "",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "task_id_1",
+			"value": "",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "task_id_2",
+			"value": "",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "task_id_3",
+			"value": "",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "profile_id",
+			"value": "",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "project_id",
+			"value": "",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "user_id",
+			"value": "",
+			"type": "any",
+			"enabled": true
+		}
+	],
+	"color": null,
+	"_postman_variable_scope": "environment",
+	"_postman_exported_at": "2026-01-24T22:46:52.829Z",
+	"_postman_exported_using": "Postman/11.81.1"
+}
