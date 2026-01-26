@@ -225,7 +225,8 @@ sae-deploiement-projet/
 │   └── script.py.mako
 │
 ├── postman/                      # Collections de tests Postman
-│   └── users.postman_collection.json
+│   └── sae-api.json
+│   └── environment.json
 │
 ├── Dockerfile                    # Image Docker de l'API
 ├── docker-compose.yml            # Orchestration multi-conteneurs
