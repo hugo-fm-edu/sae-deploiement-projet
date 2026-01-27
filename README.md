@@ -83,7 +83,6 @@ Les organisations modernes ont besoin de **gérer efficacement des projets colla
 
 ### Documentation et accessibilité
 - **Swagger/OpenAPI** automatiquement généré : `GET /docs`
-- **ReDoc** pour documentation alternative : `GET /redoc`
 - Docstrings détaillées pour chaque endpoint
 - Codes HTTP appropriés (201, 204, 400, 404, 500)
 - Messages d'erreur explicites
@@ -276,7 +275,7 @@ cd sae-deploiement-projet
 #### Étape 2 : Démarrer les conteneurs
 
 ```bash
-docker-compose up -d
+docker compose up -d
 ```
 
 **Ce qu'il se passe :**
@@ -287,7 +286,7 @@ docker-compose up -d
 #### Étape 3 : Charger les données de test
 
 ```bash
-docker-compose exec db psql -U sae_samy_hugo -d sae_ddaw \
+docker compose exec db psql -U sae_samy_hugo -d sae_ddaw \
   -f /app/database/init_data.sql
 ```
 
@@ -312,10 +311,10 @@ curl http://localhost:8000/users
 
 ```bash
 # Arrêter les conteneurs
-docker-compose down
+docker compose down
 
 # Arrêter et supprimer les volumes (réinitialiser la DB)
-docker-compose down -v
+docker compose down -v
 ```
 
 ---
@@ -332,7 +331,7 @@ docker-compose down -v
 1. **Créer un environnement virtuel**
 
 ```bash
-python3 -m venv venv
+python3.11 -m venv venv
 source venv/bin/activate  # Linux/Mac
 # ou
 venv\Scripts\activate  # Windows
