@@ -675,7 +675,7 @@ Le script prépopule la base avec :
 **Avec Docker Compose** :
 
 ```bash
-docker-compose exec db psql -U sae_samy_hugo -d sae_ddaw \
+docker compose exec db psql -U sae_samy_hugo -d sae_ddaw \
   -f /app/database/init_data.sql
 ```
 
@@ -690,7 +690,7 @@ psql -U sae_samy_hugo -d sae_ddaw \
 **Ou via l'interface psql** :
 
 ```bash
-docker-compose exec db psql -U sae_samy_hugo -d sae_ddaw
+docker compose exec db psql -U sae_samy_hugo -d sae_ddaw
 
 # Dans psql :
 \i /app/database/init_data.sql
@@ -719,19 +719,19 @@ DONE           → Terminée
 
 ```bash
 # Lister les utilisateurs
-docker-compose exec db psql -U sae_samy_hugo -d sae_ddaw \
+docker compose exec db psql -U sae_samy_hugo -d sae_ddaw \
   -c "SELECT * FROM users;"
 
 # Lister les projets
-docker-compose exec db psql -U sae_samy_hugo -d sae_ddaw \
+docker compose exec db psql -U sae_samy_hugo -d sae_ddaw \
   -c "SELECT * FROM projects;"
 
 # Lister les tâches
-docker-compose exec db psql -U sae_samy_hugo -d sae_ddaw \
+docker compose exec db psql -U sae_samy_hugo -d sae_ddaw \
   -c "SELECT * FROM tasks;"
 
 # Vérifier les associations user-project
-docker-compose exec db psql -U sae_samy_hugo -d sae_ddaw \
+docker compose exec db psql -U sae_samy_hugo -d sae_ddaw \
   -c "SELECT * FROM user_project;"
 ```
 
@@ -754,13 +754,6 @@ http://localhost:8000/docs
 - Codes HTTP et erreurs possibles
 - Interface interactive pour tester directement
 
-### Documentation alternative (ReDoc)
-
-Une version alternative avec mise en page différente :
-
-```
-http://localhost:8000/redoc
-```
 
 ### Schéma OpenAPI JSON
 
