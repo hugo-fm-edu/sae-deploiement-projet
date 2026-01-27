@@ -1,15 +1,17 @@
 -- ============================================
 -- SCRIPT D'INITIALISATION DES DONNÉES DE TEST
 -- ============================================
--- 
+--
 -- Ce script insère des données de test dans la base de données
 -- pour faciliter les tests manuels de l'API.
 --
--- UTILISATION:
--- psql -U sae_samy_hugo -d sae_ddaw -f database/init_data.sql
+-- PRÉREQUIS: Les tables doivent être créées par l'API FastAPI avant d'exécuter ce script
+-- (l'API crée automatiquement les tables au démarrage via SQLAlchemy)
 --
--- Ou via docker-compose:
--- docker-compose exec db psql -U sae_samy_hugo -d sae_ddaw -f /docker-entrypoint-initdb.d/init_data.sql
+-- UTILISATION:
+-- 1. Démarrer l'API avec: docker compose up -d
+-- 2. Attendre que l'API crée les tables (vérifier les logs)
+-- 3. Exécuter ce script: docker compose exec db psql -U sae_samy_hugo -d sae_ddaw -f /app/database/init_data.sql
 --
 -- ============================================
 
