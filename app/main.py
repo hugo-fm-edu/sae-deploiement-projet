@@ -11,16 +11,6 @@ from app.routes.users import router as users_router
 from app.routes.projects import router as projects_router
 from app.routes.task import router as tasks_router
 
-#temporaire pour generer automatiquement les tables à partir des modeles ORM
-try:
-    from app.database import Base, engine
-    Base.metadata.create_all(bind=engine)
-    print("Tables créées avec succès")
-except Exception as e:
-    print(f"Base de données non accessible (c'est logique): {e}")
-    print("   L'API va démarrer sans DB. Les routes nécessitant la DB échoueront, juste pour valider le dockerfile avant de passer au docker-compose")
-
-
 app = FastAPI(
     title="SAE Project API",
     description="""
