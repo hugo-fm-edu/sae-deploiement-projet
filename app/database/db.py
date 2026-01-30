@@ -8,7 +8,9 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # Récupérer l'URL de la base de données
-DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://sae_samy_hugo:sae_samy_hugo@localhost:5432/sae_ddaw")
+DATABASE_URL = os.getenv("DATABASE_URL")
+if not DATABASE_URL:
+    raise ValueError("La variable d'environnement DATABASE_URL est requise")
 
 # Créer le moteur SQLAlchemy
 # echo=True affiche les requêtes SQL dans le terminal (utile pour debug)
