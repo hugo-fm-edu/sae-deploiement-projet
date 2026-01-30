@@ -1,0 +1,16 @@
+# Framework Web
+fastapi==0.115.6
+uvicorn[standard]==0.34.0
+requests>=2.32.5
+
+# Base de données et ORM
+sqlalchemy==2.0.36
+psycopg2-binary>=2.9.10
+alembic==1.14.0
+
+# Validation et sérialisation
+pydantic==2.10.6
+pydantic[email]==2.10.6
+
+# Variables d'environnement
+python-dotenv==1.0.1

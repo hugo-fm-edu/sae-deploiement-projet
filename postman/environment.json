@@ -1,0 +1,34 @@
+{
+	"id": "31f665e8-e5a3-4dfa-880e-19d7ff370701",
+	"name": "Local Environment",
+	"values": [
+		{
+			"key": "base_url",
+			"value": "",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "user_id",
+			"value": "",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "task_id",
+			"value": "",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "project_id",
+			"value": "",
+			"type": "default",
+			"enabled": true
+		}
+	],
+	"color": null,
+	"_postman_variable_scope": "environment",
+	"_postman_exported_at": "2026-01-27T08:41:53.466Z",
+	"_postman_exported_using": "Postman/11.81.4"
+}
