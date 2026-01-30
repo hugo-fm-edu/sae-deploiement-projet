@@ -28,7 +28,9 @@ if config.config_file_name is not None:
 target_metadata = Base.metadata
 
 # Récupérer l'URL depuis les variables d'environnement
-DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://sae_samy_hugo:sae_samy_hugo@localhost:5432/sae_ddaw")
+DATABASE_URL = os.getenv("DATABASE_URL")
+if not DATABASE_URL:
+    raise ValueError("La variable d'environnement DATABASE_URL est requise")
 config.set_main_option("sqlalchemy.url", DATABASE_URL)
 
 
