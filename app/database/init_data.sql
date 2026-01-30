@@ -11,7 +11,7 @@
 -- UTILISATION:
 -- 1. Démarrer l'API avec: docker compose up -d
 -- 2. Attendre que l'API crée les tables (vérifier les logs)
--- 3. Exécuter ce script: docker compose exec db psql -U sae_samy_hugo -d sae_ddaw -f /app/database/init_data.sql
+-- 3. Exécuter ce script: docker compose exec db psql -U votre_user -d votre_password -f /app/database/init_data.sql
 --
 -- ============================================
 
