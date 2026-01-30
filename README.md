@@ -275,7 +275,7 @@ cd sae-deploiement-projet
 #### Étape 2 : Démarrer les conteneurs
 
 ```bash
-docker compose up -d
+docker compose up -d #ou avec docker-compose
 ```
 
 **Ce qu'il se passe :**
@@ -287,7 +287,7 @@ docker compose up -d
 
 ```bash
 docker compose exec db psql -U sae_samy_hugo -d sae_ddaw \
-  -f /app/database/init_data.sql
+  -f /app/database/init_data.sql  #ou avec docker-compose
 ```
 
 Ou avec le chemin local :
@@ -311,10 +311,10 @@ curl http://localhost:8000/users
 
 ```bash
 # Arrêter les conteneurs
-docker compose down
+docker compose down #ou avec docker-compose
 
 # Arrêter et supprimer les volumes (réinitialiser la DB)
-docker compose down -v
+docker compose down -v #ou avec docker-compose
 ```
 
 ---
@@ -771,11 +771,17 @@ http://localhost:8000/openapi.json
 ### Fichier `.env.example`
 
 ```env
-# Base de données
-DATABASE_URL=postgresql://sae_samy_hugo:sae_samy_hugo@db:5432/sae_ddaw
+# Configuration de la base de données
+DATABASE_URL=postgresql://sae_samy_hugo:sae_samy_hugo@localhost:5432/sae_ddaw
 
-# FastAPI
-FASTAPI_ENV=development
+# Configuration de l'application
+APP_ENV=development
+DEBUG=True
+
+# PostgreSQL (pour Docker Compose)
+POSTGRES_USER=sae_samy_hugo
+POSTGRES_PASSWORD=sae_samy_hugo
+POSTGRES_DB=sae_ddaw
 ```
 
 ### Utilisation
