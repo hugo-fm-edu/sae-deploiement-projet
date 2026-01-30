@@ -649,8 +649,8 @@ Ces variables sont déjà intégrées dans les requêtes de la collection (synta
 L'image est disponible avec deux tags :
 
 ```bash
-# Version stable (1.0.0)
-docker pull samykb147/sae-api-project:1.0.0
+# images versionnées (la dérnière est v4.0.O)
+docker pull samykb147/sae-api-project:v4.0.0
 
 # Version latest (dernière version)
 docker pull samykb147/sae-api-project:latest
